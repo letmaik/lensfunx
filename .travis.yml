@@ -11,9 +11,10 @@ script:
   - base64 --decode --ignore-garbage ~/.ssh/id_rsa_base64 > ~/.ssh/id_rsa
   - chmod 600 ~/.ssh/id_rsa
   - echo -e "Host github.com\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
+  - cd ..
   - git clone -b gh-pages git@github.com:neothemachine/lensfunx.git gh-pages
-  - mv plots/* gh-pages/plots
-  - cd plots
+  - mv lensfunx/plots/* gh-pages/plots
+  - cd gh-pages
   - git add .
   - git commit --author="Travis <>" -m 'automated commit'
   - git push origin gh-pages
