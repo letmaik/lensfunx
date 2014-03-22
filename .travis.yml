@@ -16,7 +16,7 @@ script:
   - mv lensfunx/plots/* gh-pages/plots
   - cd gh-pages
   - git add .
-  - git commit --author="Travis <>" -m 'automated commit'
+  - git commit --author="Travis <travis@travis-ci.org>" -m 'automated commit'
   - git push origin gh-pages
 env:
   global:
