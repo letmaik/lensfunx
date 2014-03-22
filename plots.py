@@ -7,6 +7,7 @@ import lensfun
 import matplotlib as mpl
 mpl.use('Agg')
 import matplotlib.pyplot as plt
+from prettyplotlib.colors import blue_red
 
 def vectorLengths(vectors):
     return np.sqrt((vectors*vectors).sum(axis=1))
@@ -28,7 +29,7 @@ def lensDistortionPixelDistances(mod):
 
 def drawHeatmap(data, path):
     fig, ax = plt.subplots()
-    im = ax.imshow(data, cmap=mpl.cm.RdBu)
+    im = ax.imshow(data, cmap=blue_red)
     fig.colorbar(im)
     fig.savefig(path)
     plt.close(fig)
@@ -38,11 +39,10 @@ camModel = 'NIKON D3S'
 lensMaker = 'Nikon'
 lensModel = 'Nikkor 28mm f/2.8D AF'
 
-focalLength = 28.0
-aperture = 1.4
 distance = 10
-width = 4284
-height = 2844
+focalLength = lens.MinFocal
+aperture = lens.MinAperture
+width, height = 600, 400 # 3:2 aspect ratio
 
 db = lensfun.Database()
 cam = db.findCameras(camMaker, camModel)[0]
