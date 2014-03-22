@@ -15,8 +15,10 @@ script:
   - git clone -b gh-pages git@github.com:neothemachine/lensfunx.git gh-pages
   - mv lensfunx/plots/* gh-pages/plots
   - cd gh-pages
+  - git config user.name "Travis"
+  - git config user.email "travis@travis-ci.org"
   - git add .
-  - git commit --author="Travis <travis@travis-ci.org>" -m 'automated commit'
+  - git commit -m 'automated commit'
   - git push origin gh-pages
 env:
   global:
