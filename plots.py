@@ -39,14 +39,14 @@ camModel = 'NIKON D3S'
 lensMaker = 'Nikon'
 lensModel = 'Nikkor 28mm f/2.8D AF'
 
+db = lensfun.Database()
+cam = db.findCameras(camMaker, camModel)[0]
+lens = db.findLenses(cam, lensMaker, lensModel)[0]
+
 distance = 10
 focalLength = lens.MinFocal
 aperture = lens.MinAperture
 width, height = 600, 400 # 3:2 aspect ratio
-
-db = lensfun.Database()
-cam = db.findCameras(camMaker, camModel)[0]
-lens = db.findLenses(cam, lensMaker, lensModel)[0]
 
 plotsPath = 'plots'
 os.mkdir(plotsPath)
