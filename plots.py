@@ -79,6 +79,20 @@ def lensDistortionRelativeDistance(mod):
 
     return distanceRelative
 
+def lensDistortionRelativeDistance2(mod):
+    '''
+
+    :rtype: ndarray of shape (h,w)
+    '''
+    distance, _, hUndist = lensDistortionDistance(mod, retH=True)
+    hUndistCorner = sqrt(hUndist.shape[0]**2 + hUndist.shape[1]**2)/2
+    distanceRelative = distance / hUndistCorner
+    # TODO make this more clever
+    distanceRelative[distanceRelative < -0.99] = np.nan
+    distanceRelative[distanceRelative > 0.99] = np.nan
+
+    return distanceRelative
+
 def drawHeatmap(path, data):
     data = ma.masked_invalid(data, copy=False)
     fig, ax = plt.subplots()
@@ -123,8 +137,10 @@ dist = lensDistortionDistance(mod)
 drawHeatmap(os.path.join(plotsPath, 'dist.svg'), dist)
 
 distRel = lensDistortionRelativeDistance(mod)
-drawHeatmap(os.path.join(plotsPath, 'dist_rel.svg'), distRel)
+drawHeatmap(os.path.join(plotsPath, 'dist_rel.svg'), distRel*100)
 
+distRel2 = lensDistortionRelativeDistance2(mod)
+drawHeatmap(os.path.join(plotsPath, 'dist_rel_corner.svg'), distRel2*100)
 
 # get the internal models interpolated for the given focal length
 calib = lens.interpolateDistortion(focalLength)
