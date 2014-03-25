@@ -147,6 +147,6 @@ else:
 
 X = np.linspace(0, focalLength/10, 50)
 
-drawLinePlot(os.path.join(plotsPath, 'dist_rel_2.svg'), X, [(rd(x)-x)/x*focalLength for x in X], ylabel='$\mathrm{mm}')
+drawLinePlot(os.path.join(plotsPath, 'dist_rel_2.svg'), X, [(rd(x)-x)/x*100 for x in X], ylabel='%')
 drawLinePlot(os.path.join(plotsPath, 'deriv.svg'), X, [rd1(x)*focalLength for x in X], ylabel='$\mathrm{mm}^{-1}$')
 
