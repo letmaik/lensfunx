@@ -7,6 +7,7 @@ import numpy.ma as ma
 import lensfun
 
 import matplotlib as mpl
+from math import asin, sqrt, cos
 mpl.use('Agg')
 import matplotlib.pyplot as plt
 import brewer2mpl
@@ -145,8 +146,24 @@ elif calib.Model == lensfun.DistortionModel.POLY5:
 else:
     raise NotImplementedError
 
-X = np.linspace(0, focalLength/10, 50)
+# calculate the sensor's (half) height, as it is used for scaling within lensfun
+# TODO doesn't take into account the aspect ratio yet
+wFX = 36
+hFX = 24
+dFX = sqrt(wFX**2 + hFX**2)
+alpha = asin(wFX/dFX)
+d = dFX*lens.CropFactor
+h = cos(alpha)*d
 
-drawLinePlot(os.path.join(plotsPath, 'dist_rel_2.svg'), X, [(rd(x)-x)/x*100 for x in X], ylabel='%')
-drawLinePlot(os.path.join(plotsPath, 'deriv.svg'), X, [rd1(x)*focalLength for x in X], ylabel='$\mathrm{mm}^{-1}$')
+sensorHalfHeight = h/2
+
+X = np.linspace(0, focalLength, 50)
+
+drawLinePlot(os.path.join(plotsPath, 'dist_rel_2.svg'), X, 
+             [(rd(x/sensorHalfHeight)-x/sensorHalfHeight)/(x/sensorHalfHeight)*100 for x in X],
+             xlabel='$h\;(\mathrm{mm})$',
+             ylabel='distortion $D\;(\%)$')
+drawLinePlot(os.path.join(plotsPath, 'deriv.svg'), X, [rd1(x/sensorHalfHeight)*sensorHalfHeight for x in X], 
+             xlabel='$h\;(\mathrm{mm})$',
+             ylabel='$dD/dh\;(\mathrm{mm}^{-1})$')
 
