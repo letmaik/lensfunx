@@ -9,7 +9,9 @@ import lensfun
 import matplotlib as mpl
 mpl.use('Agg')
 import matplotlib.pyplot as plt
-from prettyplotlib.colors import blue_red
+import brewer2mpl
+
+blue_red = brewer2mpl.get_map('RdBu', 'Diverging', 11, reverse=True).mpl_colormap
 
 def ptlens(ru, a, b, c, order=0):
     if order == 0:

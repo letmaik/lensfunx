@@ -3,7 +3,7 @@ virtualenv:
   system_site_packages: true
 install:
   - sudo apt-get install python-numpy python-matplotlib liblensfun0 liblensfun-dev
-  - pip install --user lensfunpy prettyplotlib
+  - pip install --user lensfunpy brewer2mpl
 script:
   - python plots.py
 # ssh key decryption, see https://gist.github.com/lukewpatterson/4242707
