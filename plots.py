@@ -2,12 +2,12 @@ from __future__ import division
 
 from functools import partial
 import os
+from math import asin, sqrt, cos
 import numpy as np
 import numpy.ma as ma
 import lensfun
 
 import matplotlib as mpl
-from math import asin, sqrt, cos
 mpl.use('Agg')
 import matplotlib.pyplot as plt
 import brewer2mpl
@@ -101,15 +101,43 @@ def drawHeatmap(path, data):
     fig.savefig(path)
     plt.close(fig)
     
-def drawLinePlot(path, x, y, xlabel=None, ylabel=None):
+def drawLinePlot(x, y, xlim=None, ylim=None, xlabel=None, ylabel=None, grid=True):
     fig,ax = plt.subplots()
+    if xlim:
+        ax.set_xlim(xlim)
+    if ylim:
+        ax.set_ylim(ylim)
     if xlabel:
         ax.set_xlabel(xlabel)
     if ylabel:
         ax.set_ylabel(ylabel)
-    ax.plot(x, y)
+    ax.plot(x, y, color='black')
+    if grid:
+        ax.grid()
+    return fig, ax
+
+def saveFig(path, fig):
     fig.savefig(path)
     plt.close(fig)
+    
+def poly_between(x, ylower, yupper):
+    """
+    given a sequence of x, ylower and yupper, return the polygon that
+    fills the regions between them.  ylower or yupper can be scalar or
+    iterable.  If they are iterable, they must be equal in length to x
+
+    return value is x, y arrays for use with Axes.fill
+    """
+    Nx = len(x)
+    if not np.iterable(ylower):
+        ylower = ylower*np.ones(Nx)
+
+    if not np.iterable(yupper):
+        yupper = yupper*np.ones(Nx)
+
+    x = np.concatenate( (x, x[::-1]) )
+    y = np.concatenate( (yupper, ylower[::-1]) )
+    return x,y 
     
 camMaker = 'NIKON CORPORATION'
 camModel = 'NIKON D3S'
@@ -174,13 +202,29 @@ h = cos(alpha)*d
 sensorHalfHeight = h/2
 sensorHalfDiagonal = d/2
 
-X = np.linspace(0, sensorHalfDiagonal, 50)
+X = np.linspace(0, sensorHalfDiagonal, 100)
 
-drawLinePlot(os.path.join(plotsPath, 'dist_rel_2.svg'), X, 
-             [(rd(x/sensorHalfHeight)-x/sensorHalfHeight)/(x/sensorHalfHeight)*100 for x in X],
-             xlabel='$h\;(\mathrm{mm})$',
-             ylabel='distortion $D\;(\%)$')
-drawLinePlot(os.path.join(plotsPath, 'deriv.svg'), X, [rd1(x/sensorHalfHeight)*sensorHalfHeight for x in X], 
-             xlabel='$h\;(\mathrm{mm})$',
-             ylabel='$dD/dh\;(\mathrm{mm}^{-1})$')
+fig, ax = drawLinePlot(X, 
+                       [(rd(x/sensorHalfHeight)-x/sensorHalfHeight)/(x/sensorHalfHeight)*100 for x in X],
+                       xlim=[0, sensorHalfDiagonal],
+                       xlabel='$h\;(\mathrm{mm})$',
+                       ylabel='distortion $D\;(\%)$',
+                       )
+saveFig(os.path.join(plotsPath, 'dist_rel_2.svg'), fig)
 
+fig, ax = drawLinePlot(X, 
+                       [rd1(x/sensorHalfHeight)*sensorHalfHeight for x in X],
+                       xlim=[0, sensorHalfDiagonal], 
+                       xlabel='$h\;(\mathrm{mm})$',
+                       ylabel='$dD/dh\;(\mathrm{mm}^{-1})$',
+                       )
+# shade y>0 and y<0 with colors, to indicate pincushion vs. barrel distortion
+alpha = 0.3
+ymin, ymax = ax.get_ylim()
+ax.autoscale(False)
+polyPincushion = poly_between([0,sensorHalfDiagonal], 0, ymax)
+ax.fill(*polyPincushion, alpha=alpha, facecolor='orange')
+polyBarrel = poly_between([0,sensorHalfDiagonal], ymin, 0)
+ax.fill(*polyBarrel, alpha=alpha, facecolor='blue')
+
+saveFig(os.path.join(plotsPath, 'deriv.svg'), fig)
