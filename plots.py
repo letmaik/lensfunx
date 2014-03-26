@@ -1,18 +1,11 @@
 from __future__ import division
 
-from functools import partial
 import os
+from functools import partial
 from math import asin, sqrt, cos
 import numpy as np
-import numpy.ma as ma
 import lensfun
-
-import matplotlib as mpl
-mpl.use('Agg')
-import matplotlib.pyplot as plt
-import brewer2mpl
-
-blue_red = brewer2mpl.get_map('RdBu', 'Diverging', 11, reverse=True).mpl_colormap
+from draw import drawHeatmap, drawLinePlot, poly_between, saveFig
 
 def ptlens(ru, a, b, c, order=0):
     if order == 0:
@@ -51,7 +44,6 @@ def lensDistortionDistance(mod, retH = False):
     
     center = np.array([width/2, height/2])
     
-    # TODO not sure if this is right, maybe roles need to be switched
     vectorsDist = (coordsXY - center).reshape(-1, 2)
     vectorsUndist = (undistCoordsXY - center).reshape(-1, 2)
     
@@ -64,6 +56,9 @@ def lensDistortionDistance(mod, retH = False):
         return distance, hDist, hUndist
     else:
         return distance
+    
+def lensDistortionAbsoluteDistance(mod):
+    return np.abs(lensDistortionDistance(mod))
 
 def lensDistortionRelativeDistance(mod):
     '''
@@ -78,66 +73,6 @@ def lensDistortionRelativeDistance(mod):
     distanceRelative[distanceRelative > 0.99] = np.nan
 
     return distanceRelative
-
-def lensDistortionRelativeDistance2(mod):
-    '''
-
-    :rtype: ndarray of shape (h,w)
-    '''
-    distance, _, hUndist = lensDistortionDistance(mod, retH=True)
-    hUndistCorner = sqrt(hUndist.shape[0]**2 + hUndist.shape[1]**2)/2
-    distanceRelative = distance / hUndistCorner
-    # TODO make this more clever
-    distanceRelative[distanceRelative < -0.99] = np.nan
-    distanceRelative[distanceRelative > 0.99] = np.nan
-
-    return distanceRelative
-
-def drawHeatmap(path, data):
-    data = ma.masked_invalid(data, copy=False)
-    fig, ax = plt.subplots()
-    im = ax.imshow(data, cmap=blue_red)
-    fig.colorbar(im)
-    fig.savefig(path)
-    plt.close(fig)
-    
-def drawLinePlot(x, y, xlim=None, ylim=None, xlabel=None, ylabel=None, grid=True):
-    fig,ax = plt.subplots()
-    if xlim:
-        ax.set_xlim(xlim)
-    if ylim:
-        ax.set_ylim(ylim)
-    if xlabel:
-        ax.set_xlabel(xlabel)
-    if ylabel:
-        ax.set_ylabel(ylabel)
-    ax.plot(x, y, color='black')
-    if grid:
-        ax.grid()
-    return fig, ax
-
-def saveFig(path, fig):
-    fig.savefig(path)
-    plt.close(fig)
-    
-def poly_between(x, ylower, yupper):
-    """
-    given a sequence of x, ylower and yupper, return the polygon that
-    fills the regions between them.  ylower or yupper can be scalar or
-    iterable.  If they are iterable, they must be equal in length to x
-
-    return value is x, y arrays for use with Axes.fill
-    """
-    Nx = len(x)
-    if not np.iterable(ylower):
-        ylower = ylower*np.ones(Nx)
-
-    if not np.iterable(yupper):
-        yupper = yupper*np.ones(Nx)
-
-    x = np.concatenate( (x, x[::-1]) )
-    y = np.concatenate( (yupper, ylower[::-1]) )
-    return x,y 
     
 camMaker = 'NIKON CORPORATION'
 camModel = 'NIKON D3S'
@@ -162,13 +97,13 @@ mod = lensfun.Modifier(lens, cam.CropFactor, width, height)
 mod.initialize(focalLength, aperture, distance)
 
 dist = lensDistortionDistance(mod)
-drawHeatmap(os.path.join(plotsPath, 'dist.svg'), dist)
+drawHeatmap(os.path.join(plotsPath, 'dist_actual_2d.svg'), dist)
+
+distAbs = lensDistortionAbsoluteDistance(mod)
+drawHeatmap(os.path.join(plotsPath, 'dist_absolute_2d.svg'), distAbs)
 
 distRel = lensDistortionRelativeDistance(mod)
-drawHeatmap(os.path.join(plotsPath, 'dist_rel.svg'), distRel*100)
-
-distRel2 = lensDistortionRelativeDistance2(mod)
-drawHeatmap(os.path.join(plotsPath, 'dist_rel_corner.svg'), distRel2*100)
+drawHeatmap(os.path.join(plotsPath, 'dist_relative_2d.svg'), distRel*100)
 
 # get the internal models interpolated for the given focal length
 calib = lens.interpolateDistortion(focalLength)
@@ -210,7 +145,7 @@ fig, ax = drawLinePlot(X,
                        xlabel='$h\;(\mathrm{mm})$',
                        ylabel='distortion $D\;(\%)$',
                        )
-saveFig(os.path.join(plotsPath, 'dist_rel_2.svg'), fig)
+saveFig(os.path.join(plotsPath, 'dist_relative_1d.svg'), fig)
 
 fig, ax = drawLinePlot(X, 
                        [rd1(x/sensorHalfHeight)*sensorHalfHeight for x in X],
@@ -227,4 +162,5 @@ ax.fill(*polyPincushion, alpha=alpha, facecolor='orange')
 polyBarrel = poly_between([0,sensorHalfDiagonal], ymin, 0)
 ax.fill(*polyBarrel, alpha=alpha, facecolor='blue')
 
-saveFig(os.path.join(plotsPath, 'deriv.svg'), fig)
+saveFig(os.path.join(plotsPath, 'dist_derivative_1d.svg'), fig)
+
