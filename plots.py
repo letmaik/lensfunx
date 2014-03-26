@@ -172,8 +172,9 @@ d = dFX*lens.CropFactor
 h = cos(alpha)*d
 
 sensorHalfHeight = h/2
+sensorHalfDiagonal = d/2
 
-X = np.linspace(0, focalLength, 50)
+X = np.linspace(0, sensorHalfDiagonal, 50)
 
 drawLinePlot(os.path.join(plotsPath, 'dist_rel_2.svg'), X, 
              [(rd(x/sensorHalfHeight)-x/sensorHalfHeight)/(x/sensorHalfHeight)*100 for x in X],
