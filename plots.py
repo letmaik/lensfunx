@@ -6,24 +6,7 @@ from math import asin, sqrt, cos
 import numpy as np
 import lensfun
 from draw import drawHeatmap, drawLinePlot, poly_between, saveFig
-
-def ptlens(ru, a, b, c, order=0):
-    if order == 0:
-        return ru*(a*ru**3 + b*ru**2 + c*ru + 1 - a - b- c)
-    else:
-        return 3*a*ru**2 + 2*b*ru + c
-
-def poly3(ru, k1, order=0):
-    if order == 0:
-        return ru*(1 - k1 + k1*ru**2)
-    else:
-        return 2*k1*ru
-
-def poly5(ru, k1, k2, order=0):
-    if order == 0:
-        return ru*(1 + k1*ru**2 + k2*ru**4)
-    elif order == 1:
-        return 2*k1*ru + 4*k2*ru**3
+from models import ptlens, poly3, poly5
 
 def vectorLengths(vectors):
     return np.sqrt((vectors*vectors).sum(axis=1))
@@ -138,9 +121,10 @@ sensorHalfHeight = h/2
 sensorHalfDiagonal = d/2
 
 X = np.linspace(0, sensorHalfDiagonal, 100)
+Xscaled = X/sensorHalfHeight
 
 fig, ax = drawLinePlot(X, 
-                       [(rd(x/sensorHalfHeight)-x/sensorHalfHeight)/(x/sensorHalfHeight)*100 for x in X],
+                       (rd(Xscaled)-Xscaled)/Xscaled*100,
                        xlim=[0, sensorHalfDiagonal],
                        xlabel='$h\;(\mathrm{mm})$',
                        ylabel='distortion $D\;(\%)$',
@@ -148,7 +132,7 @@ fig, ax = drawLinePlot(X,
 saveFig(os.path.join(plotsPath, 'dist_relative_1d.svg'), fig)
 
 fig, ax = drawLinePlot(X, 
-                       [rd1(x/sensorHalfHeight)*sensorHalfHeight for x in X],
+                       rd1(Xscaled)*sensorHalfHeight,
                        xlim=[0, sensorHalfDiagonal], 
                        xlabel='$h\;(\mathrm{mm})$',
                        ylabel='$dD/dh\;(\mathrm{mm}^{-1})$',
