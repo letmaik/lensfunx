@@ -6,6 +6,7 @@ install:
   - pip install --user lensfunpy brewer2mpl
 script:
   - python plots.py
+after_success:
 # ssh key decryption, see https://gist.github.com/lukewpatterson/4242707
   - echo -n $id_rsa_{00..30} >> ~/.ssh/id_rsa_base64
   - base64 --decode --ignore-garbage ~/.ssh/id_rsa_base64 > ~/.ssh/id_rsa
