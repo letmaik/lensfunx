@@ -91,17 +91,17 @@ drawHeatmap(os.path.join(plotsPath, 'dist_relative_2d.svg'), distRel*100)
 # get the internal models interpolated for the given focal length
 calib = lens.interpolateDistortion(focalLength)
 if calib.Model == lensfun.DistortionModel.PTLENS:
-    a, b, c = calib.Terms
+    a,b,c = calib.Terms
     rd = partial(ptlens, a=a, b=b, c=c, order=0)
     rd1 = partial(ptlens, a=a, b=b, c=c, order=1)    
     
 elif calib.Model == lensfun.DistortionModel.POLY3:
-    k1, = calib.Terms
+    k1,_,_ = calib.Terms
     rd = partial(poly3, k1=k1, order=0)
     rd1 = partial(poly3, k1=k1, order=1)
     
 elif calib.Model == lensfun.DistortionModel.POLY5:
-    k1, k2, = calib.Terms
+    k1,k2,_ = calib.Terms
     rd = partial(poly5, k1=k1, k2=k2, order=0)
     rd1 = partial(poly5, k1=k1, k2=k2, order=1)
     
