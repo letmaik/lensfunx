@@ -77,7 +77,7 @@ if not os.path.exists(plotsPath):
     os.mkdir(plotsPath)
 
 mod = lensfun.Modifier(lens, cam.CropFactor, width, height)
-mod.initialize(focalLength, aperture, distance)
+mod.initialize(focalLength, aperture, distance, scale=1.0) # disable auto-scaling
 
 dist = lensDistortionDistance(mod)
 drawHeatmap(os.path.join(plotsPath, 'dist_actual_2d.svg'), dist)
