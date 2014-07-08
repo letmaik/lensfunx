@@ -37,21 +37,3 @@ def saveFig(path, fig):
     fig.savefig(path)
     plt.close(fig)
     
-def poly_between(x, ylower, yupper):
-    """
-    given a sequence of x, ylower and yupper, return the polygon that
-    fills the regions between them.  ylower or yupper can be scalar or
-    iterable.  If they are iterable, they must be equal in length to x
-
-    return value is x, y arrays for use with Axes.fill
-    """
-    Nx = len(x)
-    if not np.iterable(ylower):
-        ylower = ylower*np.ones(Nx)
-
-    if not np.iterable(yupper):
-        yupper = yupper*np.ones(Nx)
-
-    x = np.concatenate( (x, x[::-1]) )
-    y = np.concatenate( (yupper, ylower[::-1]) )
-    return x,y 

@@ -5,8 +5,9 @@ from functools import partial
 from math import asin, sqrt, cos
 import numpy as np
 import lensfun
-from draw import drawHeatmap, drawLinePlot, poly_between, saveFig
+from draw import drawHeatmap, drawLinePlot, saveFig
 from models import ptlens, poly3, poly5
+from matplotlib.mlab import poly_between
 
 def vectorLengths(vectors):
     return np.sqrt((vectors*vectors).sum(axis=1))
