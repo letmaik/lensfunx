@@ -3,6 +3,9 @@ from numpy.testing.utils import assert_almost_equal
 
 # transform lensfun distortion terms into equivalent SIP distortion terms
 
+# WARNING: THE BELOW CODE IS INCORRECT!! THE FORMULAS USED ARE FOR THE
+#          OPPOSITE TRANSFORMATION DIRECTION!
+
 def scale(w, h):
     return h/2 if h<w else w/2
 
