@@ -66,7 +66,7 @@ lensModel = 'Nikkor 28mm f/2.8D AF'
 db = lensfun.Database()
 cam = db.find_cameras(camMaker, camModel)[0]
 #lens = db.findLenses(cam, lensMaker, lensModel)[0]
-lens = filter(lambda l: l.Maker == 'Contax', db.getLenses())[0]
+lens = filter(lambda l: l.Maker == 'Contax', db.lenses)[0]
 
 distance = 10
 focalLength = lens.min_focal
