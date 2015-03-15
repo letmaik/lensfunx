@@ -1,4 +1,4 @@
-lensfunx
+lensfunx [![Build Status](https://travis-ci.org/neothemachine/lensfunx.svg?branch=master)](https://travis-ci.org/neothemachine/lensfunx)
 ========
 
 Experiments with lensfun
