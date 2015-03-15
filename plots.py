@@ -4,7 +4,7 @@ import os
 from functools import partial
 from math import asin, sqrt, cos
 import numpy as np
-import lensfun
+import lensfunpy as lensfun
 from draw import drawHeatmap, drawLinePlot, saveFig
 from models import ptlens, poly3, poly5
 from matplotlib.mlab import poly_between
@@ -19,7 +19,7 @@ def lensDistortionDistance(mod, retH = False):
     .    
     :rtype: ndarray of shape (h,w)
     '''
-    undistCoordsXY = mod.applyGeometryDistortion()
+    undistCoordsXY = mod.apply_geometry_distortion()
     
     height, width = undistCoordsXY.shape[0], undistCoordsXY.shape[1]
 
@@ -64,20 +64,20 @@ lensMaker = 'Nikon'
 lensModel = 'Nikkor 28mm f/2.8D AF'
 
 db = lensfun.Database()
-cam = db.findCameras(camMaker, camModel)[0]
+cam = db.find_cameras(camMaker, camModel)[0]
 #lens = db.findLenses(cam, lensMaker, lensModel)[0]
 lens = filter(lambda l: l.Maker == 'Contax', db.getLenses())[0]
 
 distance = 10
-focalLength = lens.MinFocal
-aperture = lens.MinAperture
+focalLength = lens.min_focal
+aperture = lens.min_aperture
 width, height = 600, 400 # 3:2 aspect ratio
     
 plotsPath = 'plots'
 if not os.path.exists(plotsPath):
     os.mkdir(plotsPath)
 
-mod = lensfun.Modifier(lens, cam.CropFactor, width, height)
+mod = lensfun.Modifier(lens, cam.crop_factor, width, height)
 mod.initialize(focalLength, aperture, distance, scale=1.0) # disable auto-scaling
 
 dist = lensDistortionDistance(mod)
@@ -90,19 +90,19 @@ distRel = lensDistortionRelativeDistance(mod)
 drawHeatmap(os.path.join(plotsPath, 'dist_relative_2d.svg'), distRel*100)
 
 # get the internal models interpolated for the given focal length
-calib = lens.interpolateDistortion(focalLength)
-if calib.Model == lensfun.DistortionModel.PTLENS:
-    a,b,c = calib.Terms
+calib = lens.interpolate_distortion(focalLength)
+if calib.model == lensfun.DistortionModel.PTLENS:
+    a,b,c = calib.terms
     rd = partial(ptlens, a=a, b=b, c=c, order=0)
     rd1 = partial(ptlens, a=a, b=b, c=c, order=1)    
     
-elif calib.Model == lensfun.DistortionModel.POLY3:
-    k1,_,_ = calib.Terms
+elif calib.model == lensfun.DistortionModel.POLY3:
+    k1,_,_ = calib.terms
     rd = partial(poly3, k1=k1, order=0)
     rd1 = partial(poly3, k1=k1, order=1)
     
-elif calib.Model == lensfun.DistortionModel.POLY5:
-    k1,k2,_ = calib.Terms
+elif calib.model == lensfun.DistortionModel.POLY5:
+    k1,k2,_ = calib.terms
     rd = partial(poly5, k1=k1, k2=k2, order=0)
     rd1 = partial(poly5, k1=k1, k2=k2, order=1)
     
