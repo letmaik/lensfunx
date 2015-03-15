@@ -115,7 +115,7 @@ wFX = 36
 hFX = 24
 dFX = sqrt(wFX**2 + hFX**2)
 alpha = asin(wFX/dFX)
-d = dFX*lens.CropFactor
+d = dFX*lens.crop_factor
 h = cos(alpha)*d
 
 sensorHalfHeight = h/2
