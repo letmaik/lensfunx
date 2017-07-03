@@ -1,4 +1,3 @@
-from __future__ import division
 import numpy as np
 
 def ptlens(ru, a, b, c, order=0):

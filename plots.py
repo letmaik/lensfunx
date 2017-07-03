@@ -1,5 +1,3 @@
-from __future__ import division
-
 import os
 from functools import partial
 from math import asin, sqrt, cos
@@ -66,7 +64,7 @@ lensModel = 'Nikkor 28mm f/2.8D AF'
 db = lensfun.Database()
 cam = db.find_cameras(camMaker, camModel)[0]
 #lens = db.findLenses(cam, lensMaker, lensModel)[0]
-lens = filter(lambda l: l.maker == 'Contax', db.lenses)[0]
+lens = next(filter(lambda l: l.maker == 'Contax', db.lenses))
 
 distance = 10
 focalLength = lens.min_focal
