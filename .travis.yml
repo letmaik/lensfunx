@@ -1,48 +1,21 @@
 language: python
-virtualenv:
-  system_site_packages: true
-install:
-  - sudo apt-get install python-numpy python-matplotlib liblensfun0 liblensfun-dev
-  - pip install --user lensfunpy brewer2mpl
-script:
-  - python plots.py
-after_success:
-# ssh key decryption, see https://gist.github.com/lukewpatterson/4242707
-  - echo -n $id_rsa_{00..30} >> ~/.ssh/id_rsa_base64
-  - base64 --decode --ignore-garbage ~/.ssh/id_rsa_base64 > ~/.ssh/id_rsa
-  - chmod 600 ~/.ssh/id_rsa
-  - echo -e "Host github.com\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
-  - cd ..
-  - git clone -b gh-pages git@github.com:neothemachine/lensfunx.git gh-pages
-  - mv lensfunx/plots/* gh-pages/plots
-  - cd gh-pages
-  - git config user.name "Travis"
-  - git config user.email "travis@travis-ci.org"
-  - git add .
-  - git commit -m 'automated commit'
-  - git push origin gh-pages
-env:
-  global:
-    - secure: "SRhTGwq9uEJCvDv6M+ZMGvmbB9I41PrOJObebg8sf2dgH3YcpZqNzucT1+jbSlUx4epg2jhiIB9P6rYnKbn4ZuEmByqADeibXwSfkkeaA7dYOrxdDxMROw5/FVPghKrHYbnxC+6y/H+FHvUb5kOjvE9CtpqVsCnHJc0bXNKR8EA="
-    - secure: "oyL7cevqzToBTKKSIfi4M6Z9Yh27jgzWX/FEp3MQC3/5U5ynZXxWtzjTsIUkVcBWi4n5X0EjqBvB23jDz8ZMX2wJs/oOa3UMHGuqyX5DCBDsGcXLSnJkawLa+nFKcoFZVk8BHn9Kje1ZDGzgO37P7gOAJBNJBfJWcxmHZLxCTF0="
-    - secure: "eYsu+10mSBF4vtlsg+sgp/RikR4VYFSJiQ98No+ZDCp+ukl8SHXty62AApKZ5fDT72G6G0sUljxtDSfLcNqwQ4eAxop36UcqNCyOt1jP+mSbexXQFtguUDONtvh+j5ewgfdG/WluDeBLMjoY0d7J3xrZ4nxis9KXgKIfKDRmNR0="
-    - secure: "oX/Q0E1EpWnkZuS7jEThdEz57S9Gb4syeKeUzLFay5VDaP+15rvLNANoFmgYrj7SF1yKl3MOVQe98kGJyY7L8IJ8eLwOy8YYZBYCzF0y/SuOqbxB1Pes/TTh/yIolMvl4oFFkjhRiV5kegkXueg9d31g96PJjPXTqcSXWx++RGw="
-    - secure: "Ii2vnLCB0uFmvxZrXzNkbhhri9waBKIWcIJMDGhI+cbFTGsawiwDhRpKSkPG7PKB3e1uTXf+0dJzeuGtbBjYQ6dRhNx+OLN8G4Uoqt5iQtLoPPrzRAgphXZ5DKjEac1pZ3XnZvhtBCKG+WbVXftc24KIZeqC6TRfc9DxMU1avzs="
-    - secure: "ZaWBrybPdFCP9gSUxawZAWZwwwMxcLVLgVVF31nXMsVNEhfJ1T4XOf+xWvMGCJe2eHN4GBu6Pya7kl7Afru/y71ifhr5k7/5tRCYqSuvLt4EJTkzy95++hTo01eBs5ISLusqyH7MX6zPb9uwta0j6+1n/81rbfDqvSsh298Jb3A="
-    - secure: "k6SALX4/TrIInV/ntm6AhRzS0wfh6XH7rai0WxzrMAnzyGGAaedi5VgEDpSQ/kJTVJuOIFoM4NgevX547VhGBCbhw+wwpoUAJCsEVJyNcZTu2QEeO6xjVXM28nPL42xwU1PjqYJQYzwJBhMfHAFXwCKgXLWfp3MO12EzVxJei18="
-    - secure: "oQ2iYP18pepdSWIFEAyb8dPcqWVy0NyvlAib7QgjGccKz6NGxPQm/545GvZ7hJQ/MRb5JIEThCKj3HUJhQuUdiMOUsWXGM7/8UQD+FqtTvFEFYC5AYDOZZjv80usfyryhAPDRjxtBStAfk/srxqAmwlEKPltQm9C7ZBI1Bai6ac="
-    - secure: "JgkQATI55bcvcc425rPcjSsnqQ/leniSTrpQFPGiyIypXh54jqavoiq7bCnJ4GcSaFOSfrCTZTv3W+qMheo/dD8+bLZMHvl+xKCaFJgzqmKNF/BAjPwnEzDBUVF7HtV2RmuRwZNvVlbVvHFrBpaCEfKu5GbH1uXgjkOu6k5LoDg="
-    - secure: "R0sHwyqID7dk5ZeQvHLWGpeIL8v6sk5mXv1xxkYpMq8xf+huaa5SEuk0aVCz/LG3iseG4SgG0VrE/3gGD2XBe6J6p6MQ4XgK4coktFYt7LYmkotbMags14RbWMNVL7lVZR18oWs0BIYNEqQwcT/HATXR50aHLnOExXO5tcAJqrk="
-    - secure: "s8u8cPZlbp2ZbRqAjcoEMH7kAjzyRtIlNn2f7qDuGQVSyIxI4r/lsMR3vI2lk9gPwJesCiJ/cr7l4IzTnzsmFXWNPeeQi3zi870MtbODFTN5zVqJkWmU/K6tLsllR9LwRxD1k+7AvFfT2B8P7o/dkT2OuB1361jSJXPB3wSzwsA="
-    - secure: "iw6y8Ir0XacoR9dFhGnQkBJShA8u/Mwl9s6cyXqVpcVz+6+3zxWa0D4MjAcq7rcGukMj/R5lA6wUuSqjV2LvYf48zeVj/r2uw++vrLpkKUcKffjgTcxEHMl0dkKTDmdIM0itUU9vfHlfSVCHxHo1O+IxhqRujc0HXnuV6nuHI1c="
-    - secure: "uvWQFS0OS26EBMl+gf1fnzAZh3XXXKWCc+jG31ih6W7FLj7YgWFyRT4JUW7rabXocLNIhYm147YriJHYu6DleeeAMnEpBn0pTdmk8+Na3YLayWGVMOlWcbejsGCqVvOrNuZCN4LLB5sCtKL2NuUuNCC6RgOoOSrePV7zbJx2Jgk="
-    - secure: "jBsXGea/uLxnT1QxJjeKpkINMXXADXgq5w3+SCbPwD+jnFcrMkswBCpaxiNZsx7YWBIweOMfVfL8yeAEfJ5P/Jp8SZm7/AgRlgJZrjqBLmdy/MT8Keq9oCnW1+PLuc+kAIetyXyrV0/rMcadMPRh+Ev8IxgcqgTQ15kfSP4SRI4="
-    - secure: "kGkTvEwG3dB/PsuFB9Q9LRIvh1Ooeo/zSK4srZsjtj6Qi/XRTkXMcUUnkyI/i/Lk7Vjq9TSEJT1C6wfJkhFKh6miOY9kvfMW3lNPemm6lh1VFZf5um190P5dLRsChSsuiil6xRmmMSXyLcY1c/GW5sBRps9Mx034TkW+LcIAdNM="
-    - secure: "PJ3ASij6MIpjUrjfe42RrJn31OMKHaDATbR/3K6sBLOBlPKGvcP96iV8n1Vv8p5AGxiqHQN7WYj3vvW91Y0Qudeyzvlldb9wYRcbHZHj/ThoE5U/ezp63koskghoeapiydw9ig9DL6OK8vUhLzvhdej7nn77sHUAA9PAyjPKRsU="
-    - secure: "n39i7MhUMp8sFqOpufOCmgQMU0xccWnfK4Co/wDrq6estjcVrMfqCqv9es8NNMTpraxBDv2NDPrqj64nBznYwLzZfO+ZekZkkzETJ0m3ueRiCO7a/cc3cJYiPCKacoO9jkqwLoi21g3Xb6LcF3zSHu6GZ0kzXNvAuPJBnKVC9Og="
-    - secure: "J+5sOGBQKG0IVnbsT/pCVpEi1nMqG0NTHJrzLKn2/l0o/vkhO6F6WBPRVktN3mIGWH4/cnxn88W9g1Grd6e4u+7hMGFgzmi32JzShvJCP7S4ydCmWtENtfXY4MUtvMBxm3/TkMQ/aTjBHfG3y29IFIHUdC9tRNxvnqyBZbfkG5k="
-    - secure: "Fn898hifVTHv8li6M1BWk05merj0XtHcIXRyW9zRTOfq4pMll7d7Dh+B7JwUZVMkOa6hckG0anu2YRu6FqZRSh2+lQ1UBVsM7wwBIcAuKtMeZ3ww6Lg2V9Pb5onjMFV/i58Vyemob+gPm9QDq0hitADQM3o710c0xJ1/lOdF+b4="
-    - secure: "ncxzW4LaCA476Fq9uuw+1w3GXsWSBAJX1dARQBl+gWuNS7RAD8+HCdbmFXmAlIoxdYs7DSpORcwsnx7yshzj0ifZlQm7j9vLfsn53KMxYUBVWDk5c+AgYnQgnXrXgUAHOgZ/V6AgKKJ0HUB+d+u2+3Z98E9KO4jRVpy2gNYLQ4Y="
-    - secure: "JjWPzuz6Ekg2GRSneNd6V72Ax0cNgeIQC1FdlIBuwn/JernD1hrkxfmg5liUztAXhDhG9dHLkWbHw591YSwYuL7S6NF1BiP5DCJu4Qwc1Ue/ReGX8HrNt3XeLBm0vgp4FH1UbRbSvncP2pF+drrGq19bK7JXsEYz/7/ZmajanfY="
-    - secure: "gjQCKWuttz5efGWkYprsZXUIfVoWsEGGldEKcZNfO9AJoTY+6jkZr9NKgkspUNwzS6IDh9UbNDto+RTZgeZfEyzhfwMraXOW/fRLfhx4Evs+DNPIrBYKCjmjKrDi+x6Awda9LdtwuSYjiw4yOtqV90YkBn8IfoqiA/4CeL42B6Q="
-    - secure: "Na5gCt9v5M9vqaN9GBTD8wYHZNbgxmTATq6U+9fyJArrkpl/lg63BaxyVGi4r2K3CbeGnlG5R5jTC6MAM9h/pHuru2x3Du8GiVsnGJwnhVmpZgu4F8cEMEyV4GIzuboJZzBI6PIZnclHDsp6u1hKhbp9iaq+YavNt4SXAL5OMIQ="
+sudo: false
+
+addons:
+  apt:
+    packages:
+      - liblensfun-dev
+
+install: 
+  - pip install numpy
+  - pip install -r requirements.txt
+
+script: python plots.py
+
+deploy:
+  provider: pages
+  skip_cleanup: true
+  local_dir: plots
+  github_token: $GITHUB_TOKEN
+  on:
+    branch: master
