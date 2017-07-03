@@ -1,6 +1,6 @@
-lensfunx [![Build Status](https://travis-ci.org/neothemachine/lensfunx.svg?branch=master)](https://travis-ci.org/neothemachine/lensfunx)
+lensfunx [![Build Status](https://travis-ci.org/letmaik/lensfunx.svg?branch=master)](https://travis-ci.org/letmaik/lensfunx)
 ========
 
 Experiments with lensfun
 
-see gh-pages branch for some test outputs (svg images)
+see [gh-pages branch](https://github.com/letmaik/lensfunx/tree/gh-pages) for some test outputs (svg images)
